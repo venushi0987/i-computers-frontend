@@ -26,7 +26,7 @@ export default function uploadMedia(file){
 
                 resolve(publicUrl);
 
-                toast.success("File uploaded successfully");
+                // toast.success("File uploaded successfully");
             
             })
 

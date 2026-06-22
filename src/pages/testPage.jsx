@@ -1,41 +1,56 @@
-//file upload part
-
-import { useState } from "react";
-import {createClient} from "@supabase/supabase-js";
-import { toast } from "react-hot-toast";
-import uploadMedia from "../lib/uploadMedia";
-
-
+import LoadingAnimation from "../components/loadingAnimation";
 
 export default function TestPage(){
 
-    const [file, setFile] = useState(null);
-
-    function uploadFile(){
-        uploadMedia(file).then(
-            (res) => {
-                console.log(res);
-            }).catch((err) => {
-                console.log(err);
-            }
-        );
-
-        
-    }
-
     return(
-        <div className="w-full h-full flex justify-center items-center">
-            <input type = "file" 
-            //multiple = {true}
-            onChange={
-                (e) =>{
-                    setFile(e.target.files[0]);
-                }}/>
-
-            <button onClick={uploadFile} className="p-2 text-white m-2 bg-blue-600 rounded-lg">Upload</button>
+        <div className="w-[300px] h-[300px]">
+            <LoadingAnimation/>
         </div>
+        
     )
 }
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
+//file upload part
+
+// import { useState } from "react";
+// import {createClient} from "@supabase/supabase-js";
+// import { toast } from "react-hot-toast";
+// import uploadMedia from "../lib/uploadMedia";
+
+
+
+// export default function TestPage(){
+
+//     const [file, setFile] = useState(null);
+
+//     function uploadFile(){
+//         uploadMedia(file).then(
+//             (res) => {
+//                 console.log(res);
+//             }).catch((err) => {
+//                 console.log(err);
+//             }
+//         );
+
+        
+//     }
+
+//     return(
+//         <div className="w-full h-full flex justify-center items-center">
+//             <input type = "file" 
+//             //multiple = {true}
+//             onChange={
+//                 (e) =>{
+//                     setFile(e.target.files[0]);
+//                 }}/>
+
+//             <button onClick={uploadFile} className="p-2 text-white m-2 bg-blue-600 rounded-lg">Upload</button>
+//         </div>
+//     )
+// }
+
+//--------------------------------------------------------------------------------------------------------------------------------------------
 
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtyd3F4empjZHFkb3N5bmx4aXlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NzE4MTUsImV4cCI6MjA5NzA0NzgxNX0.L_1W6J7K1CYQtWLWsLf06_Eh_Hkw01M-BzHpLv1qTWc
 //https://krwqxzjcdqdosynlxiyd.supabase.co

@@ -1,12 +1,16 @@
 import { useState } from "react";
-import toast from "react-hot-toast";
+import toast, { LoaderIcon } from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-const navigate = useNavigate()
+import uploadMedia from "../../lib/uploadMedia";
+import api from "../../lib/api";
+import { CiCircleInfo } from "react-icons/ci";
+import LoadingAnimation from "../../components/loadingAnimation";
 
 export default function AddProductsForm(){
+    const navigate = useNavigate()
     const [productId, setProductId] = useState("");
     const [name, setName] = useState("");
-    const [altName, setAltName] = useState("");
+    const [altNames, setAltNames] = useState("");
     const [description, setDescription] = useState("");
     const [images, setImages] = useState([]);
     const [price, setPrice] = useState("");
@@ -16,14 +20,33 @@ export default function AddProductsForm(){
     const [category, setCategory] = useState("");
     const [brand, setBrand] = useState("");
     const [model, setModel] = useState("");
+    const [loading, setLoading] = useState(false);
 
     async function handleSave() {
+        setLoading(true)
         const token = localStorage.getItem("token")
         if(token==null){
             toast.error("You are not logged in")
             navigate("/login")
             return
-        }try{
+        }
+
+        const productData = {
+            productId : productId,
+            name : name,
+            altNames : [],
+            description : description,
+            images : [],
+            price : price,
+            labelledPrice : labelledPrice,
+            stock : stock,
+            isAvailable : isAvailable,
+            category : category,
+            brand : brand,
+            model : model
+        }
+
+        try{
             const imageUploadPromises = []
 
             for(let i = 0; i<images.length; i++){
@@ -32,18 +55,34 @@ export default function AddProductsForm(){
 
             console.log(imageUploadPromises)
 
-            const result = await Promise.all(imageUploadPromises)
+            productData.images = await Promise.all(imageUploadPromises)
+
+            productData.altNames = altNames.split(",")
+
+            const res = await api.post("/products", productData, {
+                headers : {
+                    Authorization : "Bearer "+token
+                }
+            })
+            console.log(res)
+            toast.success("Product added successfully")
+
+            navigate("/admin/products")
 
         }catch(err){
             console.log(err)
             toast.error("Failed to add product")
+            setLoading(false)
         }
 
 
     }
 
     return(
-        <div className="w-full max-h-full flex flex-wrap p-4 items-start overflow-y-scroll">
+        <div className="w-full max-h-full flex flex-wrap p-4 items-start overflow-y-scroll gap-0">
+            {loading && <LoadingAnimation />}
+
+            
             <div className="w-full h-[100px] bg-white shadow-md rounded-md flex items-center p-4 justify-between mb-6">
                 <h1 className="text-2xl font-semibold text-secondary">Add Product</h1>
                 <div className="flex gap-2">
@@ -62,9 +101,9 @@ export default function AddProductsForm(){
                     <input type="text" value={name} onChange={(e)=>setName(e.target.value)} className="w-full h-[40px] rounded-md border-2 border-gray-300 p-2 mb-4"></input>
                 </div>
 
-                <div className="w-[45%] flex flex-col h-[100px] p-2">
-                    <label className="text-secondary text-lg font-semibold mb-2">Alternative Names</label>
-                    <input type="text" value={altName} onChange={(e)=>setAltName(e.target.value)} className="w-full h-[40px] rounded-md border-2 border-gray-300 p-2 mb-4"></input>
+                <div className="w-[45%] flex flex-col h-[100px] p-2 ">
+                    <label className="text-secondary text-lg font-semibold mb-2 flex items-center gap-2">Alternative Names<span className="flex justify-center items-center h-full italic font-thin"><CiCircleInfo />(Comma-Separated)</span></label>
+                    <input type="text" value={altNames} onChange={(e)=>setAltNames(e.target.value)} className="w-full h-[40px] rounded-md border-2 border-gray-300 p-2 mb-4"></input>
                 </div>
 
                 <div className="w-full flex flex-col p-2">
@@ -104,7 +143,7 @@ export default function AddProductsForm(){
 
                 <div className="w-1/4 flex flex-col h-[100px] p-2">
                     <label className="text-secondary text-lg font-semibold mb-2">Category</label>
-                    <select value={isAvailable} onChange={(e)=>setIsAvailable(e.target.value)} className="w-full h-[40px] rounded-md border-2 border-gray-300 p-2 mb-4">
+                    <select value={category} onChange={(e)=>setCategory(e.target.value)} className="w-full h-[40px] rounded-md border-2 border-gray-300 p-2 mb-4">
                         <option value="Laptop">Laptop</option>
                         <option value="Desktop">Desktop</option>
                         <option value="Monitor">Monitor</option>
