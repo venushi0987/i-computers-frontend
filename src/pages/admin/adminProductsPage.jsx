@@ -5,20 +5,108 @@ import { useEffect } from "react";
 import api from "../../lib/api";
 import { CiTrash } from "react-icons/ci";
 import { CiEdit } from "react-icons/ci";
-
-
+import LoadingAnimation from "../../components/LoadingAnimation";
+import toast from "react-hot-toast";
+import DeleteProductModel from "../../components/deleteProductModel";
+import EditProductsForm from "./adminEditProductForm";
 
 
 export default function AdminProductsPage(){
 
     const [products, setProducts] = useState([]);
+    const[isLoading, setIsLoading] = useState(true);
 
         useEffect(()=>{
             api.get("/products").then((res)=>{
-                console.log(res.data)
-                setProducts(res.data)
+                if(isLoading){
+                    console.log(res.data)
+                    setProducts(res.data)
+                    setIsLoading(false)
+                }
             })
-        },[]);
+        },
+        [isLoading]
+    );
+
+    //---------------------------------------alert--------------------------------------------------------------------
+
+    // async function handleDelete(productId){
+    //     const token = localStorage.getItem("token");
+    //     const confirm = window.confirm("Are you sure you want to delete this product?");
+    //     if(!confirm){
+    //         return;
+    //     }
+
+    //     try{
+    //         const res = await api.delete(`/products/${productId}`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${token}`
+    //             }
+    //         });
+    //         toast.success("Product deleted successfully");
+    //         setIsLoading(true);
+
+    //     }catch(err){
+    //         toast.error("Failed to delete product");
+    //     }
+    // }
+
+    //-----------------------------------toast---------------------------------------------------------------------
+
+    // function handleDelete(productId){
+    //     toast(
+    //         (t) => {
+    //             return <div className="flex flex-col justify-center items-center gap-4">
+    //                 <h1 className="text-lg font-semibold text-secondary">Are you sure you want to delete this product with ID {productId}?</h1>
+    //                 <div className="flex gap-4 justify-end w-full">
+
+    //                     <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 "
+    //                         onClick = { async () => {
+    //                                 const token = localStorage.getItem("token");
+    //                                 try{
+    //                                     const res = await api.delete(`/products/${productId}`, {
+    //                                         headers: {
+    //                                             Authorization: `Bearer ${token}`
+    //                                         }
+    //                                     });
+    //                                     toast.dismiss();
+    //                                     toast.success("Product deleted successfully");
+    //                                     setIsLoading(true);
+    //                                 }catch(err){
+    //                                     toast.dismiss();
+    //                                     toast.error("Failed to delete product");
+    //                                 }
+                                   
+    //                             }
+    //                         }
+                            
+    //                         >
+    //                         Yes
+    //                     </button>
+    //                     <button className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+    //                         onClick = { () => {
+    //                             toast.dismiss();
+    //                         }
+    //                         }
+    //                         >
+    //                         No
+    //                     </button>
+    //                 </div>
+    //             </div>
+    //             },
+    //         {
+    //             position: "top-center",
+    //             // duration: infinity,
+    //         }
+    //     )
+    // }
+
+
+    //-----------------------------------pop up menu-------------------------------------------------------------
+
+
+
+
 
 //Make the backend call to get products
 //update the products variable's value with response from backend
@@ -38,9 +126,28 @@ export default function AdminProductsPage(){
             }
 
             <div className="w-full h-[100px] bg-white shadow-md rounded-md flex items-center p-4 justify-between mb-6">
+                {
+                    isLoading && <LoadingAnimation />
+                }
                 <h1 className="text-2xl font-semibold text-secondary">Add Product</h1>
-                <div className="flex gap-2">
-                    {products.length} products
+
+                <div className="flex gap-4 justify-center items-center">
+                    <span>{products.length} products</span>
+
+                    <button 
+                    onClick={
+                        ()=>{
+                            //window.location.reload();
+                            //rerun the function inside useEffect to get the products again
+                            setIsLoading(!isLoading)
+
+                        }
+                    }
+                    
+                    className="bg-accent text-white px-4 py-2 rounded-md">
+                        Refresh
+                    </button>
+
                 </div>  
             </div>
 
@@ -87,8 +194,18 @@ export default function AdminProductsPage(){
                                             <button className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600">
                                                 Delete
                                             </button> */}
-                                            <CiEdit />
-                                            <CiTrash />
+
+                                            <Link 
+                                            state={item}
+                                            to={`/admin/edit-product`}>
+                                                <CiEdit className="text-3xl text-black hover:text-accent cursor-pointer"/>
+                                            </Link>
+                                            {/* <CiTrash className="hover:text-red-600 cursor-pointer"
+                                            onClick={
+                                                () => handleDelete(item.productId)}
+                                            /> */}
+
+                                            <DeleteProductModel product={item} refresh={() => {setIsLoading(true)}}/>
                                         </div>
                                     </td>
                                 </tr>

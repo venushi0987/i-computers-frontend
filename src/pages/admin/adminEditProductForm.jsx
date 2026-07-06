@@ -1,28 +1,40 @@
 import { useState } from "react";
 import toast, { LoaderIcon } from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import uploadMedia from "../../lib/uploadMedia";
 import api from "../../lib/api";
 import { CiCircleInfo } from "react-icons/ci";
 import LoadingAnimation from "../../components/loadingAnimation";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
-export default function AddProductsForm(){
-    const navigate = useNavigate()
-    const [productId, setProductId] = useState("");
-    const [name, setName] = useState("");
-    const [altNames, setAltNames] = useState("");
-    const [description, setDescription] = useState("");
+
+
+export default function EditProductsForm(){
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const [productId, setProductId] = useState(location?.state?.productId || "");
+    const [name, setName] = useState(location?.state?.name || "");
+    const [altNames, setAltNames] = useState(location?.state?.altNames ? location.state.altNames.join(",") : "");
+    const [description, setDescription] = useState(location?.state?.description || "");
     const [images, setImages] = useState([]);
-    const [price, setPrice] = useState("");
-    const [labelledPrice, setLabelledPrice] = useState("");
-    const [stock, setStock] = useState("");
-    const [isAvailable, setIsAvailable] = useState(true);
-    const [category, setCategory] = useState("");
-    const [brand, setBrand] = useState("");
-    const [model, setModel] = useState("");
+    const [price, setPrice] = useState(location?.state?.price || "");
+    const [labelledPrice, setLabelledPrice] = useState(location?.state?.labelledPrice || "");
+    const [stock, setStock] = useState(location?.state?.stock || "");
+    const [isAvailable, setIsAvailable] = useState(location?.state?.isAvailable !== undefined ? location?.state?.isAvailable : true);
+    const [category, setCategory] = useState(location?.state?.category || "");
+    const [brand, setBrand] = useState(location?.state?.brand || "");
+    const [model, setModel] = useState(location?.state?.model || "");
     const [loading, setLoading] = useState(false);
 
-    async function handleSave() {
+    if(!location?.state) {
+        toast.error("No product data found");
+        navigate("/admin/products");
+    }
+
+    async function handleUpdate() {
         setLoading(true)
         const token = localStorage.getItem("token")
         if(token==null){
@@ -53,25 +65,29 @@ export default function AddProductsForm(){
                 imageUploadPromises[i] = uploadMedia(images[i])
             }
 
-            console.log(imageUploadPromises)
+            const uploadedImages = await Promise.all(imageUploadPromises)
 
-            productData.images = await Promise.all(imageUploadPromises)
+            if(uploadedImages.length > 0){
+                productData.images = uploadedImages
+            }else{
+                productData.images = location?.state?.images || []
+            }
 
             productData.altNames = altNames.split(",")
 
-            const res = await api.post("/products", productData, {
+            const res = await api.put("/products/"+productId, productData, {
                 headers : {
                     Authorization : "Bearer "+token
                 }
             })
             console.log(res)
-            toast.success("Product added successfully")
+            toast.success("Product updated successfully")
 
             navigate("/admin/products")
 
         }catch(err){
             console.log(err)
-            toast.error("Failed to add product")
+            toast.error("Failed to update product")
             setLoading(false)
         }
 
@@ -84,16 +100,16 @@ export default function AddProductsForm(){
 
             
             <div className="w-full h-[100px] bg-white shadow-md rounded-md flex items-center p-4 justify-between mb-6">
-                <h1 className="text-2xl font-semibold text-secondary">Add Product</h1>
+                <h1 className="text-2xl font-semibold text-secondary">Edit Product</h1>
                 <div className="flex gap-2">
                     <Link to="/admin/products" className="p-2 bg-red-600 text-white rounded-md hover:bg-red-700">Cancel</Link>
-                    <button className="p-2 bg-green-600 text-white rounded-md cursor-pointer hover:bg-green-700" onClick={handleSave}>Save</button>
+                    <button className="p-2 bg-green-600 text-white rounded-md cursor-pointer hover:bg-green-700" onClick={handleUpdate}>Update</button>
                 </div>  
             </div>
 
                 <div className="w-[15%] flex flex-col h-[100px] p-2">
                     <label className="text-secondary text-lg font-semibold mb-2">Product ID</label>
-                    <input type="text" value={productId} onChange={(e)=>setProductId(e.target.value)} className="w-full h-[40px] rounded-md border-2 border-gray-300 p-2 mb-4"></input>
+                    <input disabled type="text" value={productId} onChange={(e)=>setProductId(e.target.value)} className="w-full h-[40px] rounded-md border-2 border-gray-300 p-2 mb-4"></input>
                 </div>
 
                 <div className="w-[40%] flex flex-col h-[100px] p-2">

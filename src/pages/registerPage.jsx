@@ -45,7 +45,7 @@ export default function RegisterPage(){
         <div className="w-full h-full bg-[url('/bg.jpg')] bg-cover bg-center flex justify-center items-center">
             <div className="w-[450px] backdrop-blur-md shadow-2xl rounded-lg p-6 flex flex-col items-center">
 
-                <img src="/logo2.png" className="w-[70px] h-[70px] object-cover bg-white rounded-full"/>
+                <img src="/logo5.png" className="w-[70px] h-[70px] object-cover bg-white rounded-full"/>
 
                 <label className="w-full mt-5 text-secondary font-semibold">Email</label>
                 <input 

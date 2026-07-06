@@ -4,6 +4,7 @@ import { BsBox } from "react-icons/bs";
 import { FiUsers } from "react-icons/fi";
 import AdminProductsPage from "./admin/adminProductsPage";
 import AddProductsForm from "./admin/adminAddProductsForm";
+import EditProductsForm from "./admin/adminEditProductForm";
 
 export default function AdminPage(){
 
@@ -12,7 +13,7 @@ export default function AdminPage(){
            <div className="w-[360px] h-full shadow-2xl flex flex-col">
 
             <div className="w-full h-[60px] flex items-center mb-2 gap-2">
-                <img src="/logo2.png" alt="logo" className="w-[70px] h-[70px]"/>
+                <img src="/logo5.png" alt="logo" className="w-[70px] h-[70px]"/>
                 <span className="text-2xl font-bold">Admin</span>
             </div>
 
@@ -27,6 +28,7 @@ export default function AdminPage(){
                 <Route path="/products" element={<AdminProductsPage />} />
                 <Route path="/users" element={<h1>Users Page</h1>} />
                 <Route path="/add-product" element={<AddProductsForm />} />
+                <Route path="/edit-product" element={<EditProductsForm />} />
             </Routes>
            </div>
 
