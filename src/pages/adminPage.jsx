@@ -13,7 +13,7 @@ export default function AdminPage(){
            <div className="w-[360px] h-full shadow-2xl flex flex-col">
 
             <div className="w-full h-[60px] flex items-center mb-2 gap-2">
-                <img src="/logo5.png" alt="logo" className="w-[70px] h-[70px]"/>
+                <img src="/bg4.png" alt="logo" className="w-[200px] h-[60px]"/>
                 <span className="text-2xl font-bold">Admin</span>
             </div>
 
