@@ -18,7 +18,7 @@ export default function ProductCard(props){ // ProductCard first letter should b
           <span className="text-sm font-thin text-gray-400 px-2 mt-2">{product.productId}</span>
           <h1 className="text-lg font-semibold mt-1 px-2">{product.name}</h1>
           {
-            product.labelledPrice > product.price && <span className="text-sm text-gray-500 line-through mt-1 px-2">{getFormattedPrice(product.price)}</span>
+            product.labelledPrice > product.price && <span className="text-sm text-gray-500 line-through mt-1 px-2">{getFormattedPrice(product.labelledPrice)}</span>
           }
 
             <span className="text-lg font-bold mt-1 px-2">{getFormattedPrice(product.price)}</span>
