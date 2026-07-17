@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { getCart, getCartTotal } from "../lib/cart";
+import {getCartTotal } from "../lib/cart";
 import getFormattedPrice from "../lib/price-format";
-import { addToCart } from "../lib/cart";
-import { Link } from "react-router-dom";
+import {useLocation } from "react-router-dom";
 
-export default function CartPage() {
+export default function Checkout() {
 
-    const [cart, setCart] = useState(getCart());
+    const location = useLocation();
+    const [cart, setCart] = useState(location.state);
 
     return (
         <div className="w-full h-[calc(100vh-100px)] overflow-y-scroll flex flex-col items-center py-4 pb-[120px]">
@@ -30,8 +30,11 @@ export default function CartPage() {
                                         <button 
                                         onClick={
                                             ()=>{
-                                                addToCart(item.product, -1)
-                                                setCart(getCart())
+                                                if(item.quantity > 1){
+                                                const newCart = [...cart];
+                                                newCart[index].quantity -= 1;
+                                                setCart(newCart);
+                                                }
                                             }
                                         }
                                         className="w-[40px] h-full hover:bg-accent hover:text-white text-black font-bold hover:bg-accent-dark transition-colors duration-300 bg-gray-300 hover:cursor-pointer">-</button>
@@ -39,8 +42,9 @@ export default function CartPage() {
                                         <button 
                                         onClick={
                                             ()=>{
-                                                addToCart(item.product, 1);
-                                                setCart(getCart());
+                                                const newCart = [...cart];
+                                                newCart[index].quantity += 1;
+                                                setCart(newCart);
                                             }
                                         }
                                         className="w-[40px] h-full hover:bg-accent hover:text-white text-black font-bold hover:bg-accent-dark transition-colors duration-300 bg-gray-300 hover:cursor-pointer">+</button>
@@ -57,9 +61,9 @@ export default function CartPage() {
             }
             <div className="w-[550px] min-h-[90px] my-2 rounded-md shadow-sm flex flex-row overflow-hidden fixed bottom-2 bg-white shadow-accent items-center justify-between p-3">
             
-            <Link state={cart} to="/checkout" className="bg-accent hover:bg-accent-dark transition-colors duration-300 text-white px-4 py-2 rounded-md font-semibold">
-                Proceed to Checkout
-            </Link>
+            <button state={cart} to="/checkout" className="bg-accent hover:bg-accent-dark transition-colors duration-300 text-white px-4 py-2 rounded-md font-semibold">
+                Order Now
+            </button>
 
             <span className="text-lg font-semibold text-secondary">
                 {getFormattedPrice(getCartTotal(cart))}

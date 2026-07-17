@@ -8,7 +8,8 @@ import { BiCategory } from "react-icons/bi";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import { FaAngleRight } from "react-icons/fa";
 import getFormattedPrice from "../lib/price-format";
-import { addToCart, getCart } from "../lib/cart";
+import { addToCart} from "../lib/cart";
+import { Link } from "react-router-dom";
 
 
 export default function ProductOverview() {
@@ -66,9 +67,9 @@ export default function ProductOverview() {
                             <span className="text-lg text-gray-500 line-through font-normal">{getFormattedPrice(product.labelledPrice)}</span>
                         }
                         <p className="text-3xl font-semibold text-accent">{getFormattedPrice(product.price)}</p>
-                        <p className="text-lg mt-4 font-thin">{product.description}</p>
+                        <p className="text-lg mt-4 font-semibold text-secondary">{product.description}</p>
 
-                        <div>
+                        <div className="flex">
                             <button className="bg-accent text-white px-4 py-2 rounded-lg mt-4 hover:bg-red-600 transition-colors duration-300 cursor-pointer w-[170px] h-[50px]"
                             onClick={
                                 ()=>{
@@ -77,13 +78,26 @@ export default function ProductOverview() {
                                 }
                             }>Add to Cart</button>
 
-                            <button className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg mt-4 ml-4 hover:bg-gray-400 transition-colors duration-300 cursor-pointer w-[170px] h-[50px]"
-                            onClick={
-                                ()=>{
-                                    const cart = getCart();
-                                    console.log(cart);
-                                }
-                            }>Buy Now</button>
+                            <Link to="/checkout" 
+                            state={
+                                [
+                                    {
+                                       product:{
+                                            productId: product.productId,
+                                            name: product.name,
+                                            price: product.price,
+                                            labelledPrice: product.labelledPrice,
+                                            image: product.images[0],
+                                       },
+                                       quantity: 1
+                                    }
+
+                                ]
+                                
+                            }
+                            className="bg-gray-300 text-gray-800 px-4 py-2 font-semibold rounded-lg mt-4 ml-4 flex justify-center items-center hover:bg-gray-400 transition-colors duration-300 cursor-pointer w-[170px] h-[50px]"
+                            
+                            >Buy Now</Link>
 
                         </div>
 
