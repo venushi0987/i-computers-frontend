@@ -2,6 +2,7 @@ import { useState } from "react";
 import {getCartTotal } from "../lib/cart";
 import getFormattedPrice from "../lib/price-format";
 import {useLocation } from "react-router-dom";
+import OrderModal from "../components/orderModal";
 
 export default function Checkout() {
 
@@ -61,9 +62,7 @@ export default function Checkout() {
             }
             <div className="w-[550px] min-h-[90px] my-2 rounded-md shadow-sm flex flex-row overflow-hidden fixed bottom-2 bg-white shadow-accent items-center justify-between p-3">
             
-            <button state={cart} to="/checkout" className="bg-accent hover:bg-accent-dark transition-colors duration-300 text-white px-4 py-2 rounded-md font-semibold">
-                Order Now
-            </button>
+            <OrderModal cart={cart} />
 
             <span className="text-lg font-semibold text-secondary">
                 {getFormattedPrice(getCartTotal(cart))}
