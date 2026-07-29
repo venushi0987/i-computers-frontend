@@ -157,7 +157,9 @@ export default function AddProductsForm(){
                         <option value="RAM">RAM</option>
                         <option value="Storage">Storage</option>
                         <option value="Cooling">Cooling</option>
+                        <option value="Web Cam">Web Cam</option>
                         <option value="Headset">Headset</option>
+                        
                     </select>
                 </div>
 

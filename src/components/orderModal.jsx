@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import Modal from 'react-modal';
+import api from '../lib/api';
 import { getCartTotal } from '../lib/cart';
 import getFormattedPrice from '../lib/price-format';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import uploadMedia from '../lib/uploadMedia';
 export default function OrderModal(props){
+
+
 
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [firstName, setFirstName] = useState("")
@@ -26,6 +29,45 @@ export default function OrderModal(props){
             toast.error("Please login to place an order")
             navigate("/login")
             return
+        }
+
+         const orderData = {
+            firstName : firstName,
+            lastName : lastName,
+            addressLine1 : addressLine1,
+            addressLine2 : addressLine2,
+            city : city,
+            postalCode : postalCode,
+            phone : phoneNumber,
+            secondaryPhone : secondaryPhoneNumber,
+            customerNotes : specialNotes,
+            items : []
+        }
+        
+        for(let i=0; i<props.cart.length; i++){
+
+            orderData.items.push({
+                productId : props.cart[i].product.productId,
+                quantity : props.cart[i].quantity
+            })
+
+        }
+
+        try{
+
+            await api.post("/orders", orderData, {
+                headers : {
+                    Authorization : `Bearer ${token}`
+                }
+            })
+
+            toast.success("Order placed successfully")
+            setModalIsOpen(false)
+            navigate("/products")
+
+        }catch(err){
+            console.log(err)
+            toast.error("Failed to place order")
         }
         
        
