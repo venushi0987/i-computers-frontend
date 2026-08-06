@@ -1,30 +1,59 @@
-import { HiHome } from 'react-icons/hi';
-import './App.css'
-import { Routes, Route } from 'react-router-dom';
-import HomePage from './pages/homePage';
-import LoginPage from './pages/loginPage';
-import RegisterPage from './pages/registerPage';
-import AdminPage from './pages/adminPage';
-import TestPage from './pages/testPage';
-import { Toaster } from 'react-hot-toast';
-
+import "./App.css";
+import HomePage from "./pages/homePage";
+import LoginPage from "./pages/loginPage";
+import RegisterPage from "./pages/registerPage";
+import { Route, Routes } from "react-router-dom";
+import AdminPage from "./pages/adminPage";
+import TestPage from "./pages/testPage";
+import toast, { Toaster } from "react-hot-toast";
+import { useEffect, useState } from "react";
+import api from "./lib/api";
+import UserContext from "./context/userContext";
 function App() {
-  
+	const [user, setUser] = useState(null);
+	const [userLoadingFinished, setUserLoadingFinished] = useState(false);
 
-  return (
-    <div className="w-full h-screen bg-primary">
-      <Toaster position='top-right'/>
+	useEffect(() => {
+		const token = localStorage.getItem("token");
 
-      <Routes>
-        <Route path="/*" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/admin/*" element={<AdminPage />} />
-        <Route path="/test" element={<TestPage />} />
-      </Routes>
+		api
+			.get("/users/me", {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			})
+			.then((res) => {
+				setUser(res.data.user);
+				setUserLoadingFinished(true);
+			})
+			.catch(() => {
+				toast.error("Please login again");
+				localStorage.removeItem("token");
+				setUser(null);
+				setUserLoadingFinished(true);
+			});
+	}, []);
 
-    </div>
-  )
+	return (
+		<UserContext
+			value={{
+				user: user,
+				setUser: setUser,
+        userLoadingFinished: userLoadingFinished,
+			}}
+		>
+			<div className="w-full h-screen bg-primary">
+				<Toaster position="top-right" />
+				<Routes>
+					<Route path="/*" element={<HomePage />} />
+					<Route path="/login" element={<LoginPage />} />
+					<Route path="/register" element={<RegisterPage />} />
+					<Route path="/admin/*" element={<AdminPage />} />
+					<Route path="/test" element={<TestPage />} />
+				</Routes>
+			</div>
+		</UserContext>
+	);
 }
 
-export default App
+export default App;

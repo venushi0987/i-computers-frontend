@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import api from "../../lib/api";
-import LoadingAnimation from "../../components/loadingAnimation";
-import getFormattedPrice from "../../lib/price-format";
-import formatTimestamp from "../../lib/date-format";
-import AdminOrderDetailsModal from "../../components/adminOrderDetailsModal";
+import api from "../lib/api";
+import LoadingAnimation from "../components/loadingAnimation";
+import formatTimestamp from "../lib/date-format";
+import getFormattedPrice from "../lib/price-format";
+import OrderDetailsModal from "../components/orderDetailsModal";
 
-export default function AdminOrdersPage() {
+
+export default function MyOrdersPage() {
     const [orders, setOrders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [pageSize, setPageSize] = useState(3);
@@ -35,7 +36,7 @@ export default function AdminOrdersPage() {
 
             <div className="w-full min-h-[100px] bg-white shadow-md rounded-md flex items-center p-4 justify-between mb-8">
                 {isLoading && <LoadingAnimation />}
-                <h1 className="text-2xl font-semibold text-secondary">Orders</h1>
+                <h1 className="text-2xl font-semibold text-secondary">My Orders</h1>
 
                 <div className="flex gap-4 justify-center items-center">
                     <span>{totalOrders} Orders</span>
@@ -62,7 +63,7 @@ export default function AdminOrdersPage() {
                         <th>Status</th>
                         <th>Item count</th>
                         <th>Total</th>
-                        <th>Actions</th>
+                        <th></th>
                     </tr>
                 </thead>
 
@@ -83,7 +84,7 @@ export default function AdminOrdersPage() {
                                 <td>{getFormattedPrice(item.totalAmount)}</td>
                                 <td>
                                     <div className="flex justify-center items-center gap-2">
-                                        <AdminOrderDetailsModal order={item} refresh={() => setIsLoading(true)} />
+                                        <OrderDetailsModal order={item}/>
                                     </div>
                                     
                                 </td>
