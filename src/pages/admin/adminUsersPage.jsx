@@ -11,7 +11,6 @@ export default function AdminUsersPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [totalUsers, setTotalUsers] = useState(0);
-    
     useEffect(() => {
         const token = localStorage.getItem("token");
         api.get("/users/"+pageSize+"/"+currentPage, {
@@ -69,7 +68,7 @@ export default function AdminUsersPage() {
                             <tr key={item.email} className="odd:bg-gray-200 h-[50px]">
                                 
                                 <td>
-                                    <img src={item.image} className="h-[40px] w-[40px] p-2 border border-accent m-1 rounded-full" />
+                                    <img src={item.image} className="h-[40px] w-[40px]  border-accent m-1 rounded-full" />
                                 </td>
                                 <td>{item.email}</td>
                                 <td>{item.firstName}</td>

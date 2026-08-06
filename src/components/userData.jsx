@@ -25,7 +25,7 @@ export default function UserData(){
                 </div>
             :
                 <div className="flex gap-2">
-                    <img src={userData.user.image} alt="Avatar" className="w-[40px] h-[40px] rounded-full border border-white p-2"/>
+                    <img src={userData.user.image} alt="Avatar" className="w-[40px] h-[40px] rounded-full border border-white "/>
                     <select
                         value={selectedOption}
                         onChange={(e) => {

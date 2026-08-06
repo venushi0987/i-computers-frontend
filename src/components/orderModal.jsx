@@ -1,18 +1,19 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Modal from 'react-modal';
-import api from '../lib/api';
 import { getCartTotal } from '../lib/cart';
 import getFormattedPrice from '../lib/price-format';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import api from '../lib/api';
 import uploadMedia from '../lib/uploadMedia';
+import UserContext from '../context/userContext';
+
 export default function OrderModal(props){
-
-
-
+    
+    const userData = useContext(UserContext)
     const [modalIsOpen, setModalIsOpen] = useState(false)
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
+    const [firstName, setFirstName] = useState(userData.user?.firstName ||"")
+    const [lastName, setLastName] = useState(userData.user?.lastName ||"")
     const [addressLine1, setAddressLine1] = useState("")
     const [addressLine2, setAddressLine2] = useState("")
     const [city, setCity] = useState("")
@@ -20,6 +21,7 @@ export default function OrderModal(props){
     const [phoneNumber, setPhoneNumber] = useState("")
     const [secondaryPhoneNumber, setSecondaryPhoneNumber] = useState("")
     const [specialNotes, setSpecialNotes] = useState("")
+    // const [file, setFile] = useState(null)
     const navigate = useNavigate()
 
 
@@ -31,7 +33,7 @@ export default function OrderModal(props){
             return
         }
 
-         const orderData = {
+        const orderData = {
             firstName : firstName,
             lastName : lastName,
             addressLine1 : addressLine1,
@@ -48,7 +50,7 @@ export default function OrderModal(props){
 
             orderData.items.push({
                 productId : props.cart[i].product.productId,
-                quantity : props.cart[i].quantity
+                qty : props.cart[i].qty
             })
 
         }
@@ -69,7 +71,6 @@ export default function OrderModal(props){
             console.log(err)
             toast.error("Failed to place order")
         }
-        
        
     }
 
@@ -199,6 +200,16 @@ export default function OrderModal(props){
                                 className='w-full h-[100px] rounded-md outline-0 border-gray-500 border px-2 text-black'
                                 />
                             </div>
+
+                            {/* <div className='w-full h-[150px] flex flex-col justify-center p-4'>
+                                <label className="">Bank Slip</label>
+                                <input
+                                type='file'
+                                onChange={(e)=>{setFile(e.target.files[0])}}
+                                className='w-full h-[40px] rounded-md outline-0 border-gray-500 border px-2 text-black'
+                                />
+                               
+                            </div> */}
 
                             <div className='w-full sticky bottom-0 h-[70px] bg-[#7979b8] rounded-b-2xl flex flex-row justify-center items-center gap-2'>
                                 <button
