@@ -9,6 +9,8 @@ import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import api from "./lib/api";
 import UserContext from "./context/userContext";
+// import { GoogleOAuthProvider } from "@react-oauth/google";
+
 function App() {
 	const [user, setUser] = useState(null);
 	const [userLoadingFinished, setUserLoadingFinished] = useState(false);
@@ -35,24 +37,26 @@ function App() {
 	}, []);
 
 	return (
-		<UserContext
-			value={{
-				user: user,
-				setUser: setUser,
-        userLoadingFinished: userLoadingFinished,
-			}}
-		>
-			<div className="w-full h-screen bg-primary">
-				<Toaster position="top-right" />
-				<Routes>
-					<Route path="/*" element={<HomePage />} />
-					<Route path="/login" element={<LoginPage />} />
-					<Route path="/register" element={<RegisterPage />} />
-					<Route path="/admin/*" element={<AdminPage />} />
-					<Route path="/test" element={<TestPage />} />
-				</Routes>
-			</div>
-		</UserContext>
+		// <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+			<UserContext
+				value={{
+					user: user,
+					setUser: setUser,
+			userLoadingFinished: userLoadingFinished,
+				}}
+			>
+				<div className="w-full h-screen bg-primary">
+					<Toaster position="top-right" />
+					<Routes>
+						<Route path="/*" element={<HomePage />} />
+						<Route path="/login" element={<LoginPage />} />
+						<Route path="/register" element={<RegisterPage />} />
+						<Route path="/admin/*" element={<AdminPage />} />
+						<Route path="/test" element={<TestPage />} />
+					</Routes>
+				</div>
+			</UserContext>
+		//</GoogleOAuthProvider>
 	);
 }
 

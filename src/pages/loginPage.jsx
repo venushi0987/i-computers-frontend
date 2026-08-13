@@ -3,12 +3,56 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import api from "../lib/api";
 import { useNavigate } from "react-router-dom";
+// import { useGoogleLogin } from "@react-oauth/google";
+// import { useContext } from "react";
+// import UserContext from "../context/userContext";
 
 export default function LoginPage(){
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const navigate = useNavigate();
+    //const userData = useContext(UserContext)  
+
+    //     const googleLogin = useGoogleLogin({
+    //     onSuccess : (response)=>{
+
+    //         console.log(response)
+    //         console.log(response.access_token)
+
+    //         api.post("/users/google" , {
+    //             accessToken : response.access_token
+    //         }).then(
+    //             (res)=>{
+    //                 console.log(res)
+    //                 toast.success("Login successful")
+    //                 localStorage.setItem("token" , res.data.token)
+
+    //                 userData.setUser(res.data.user)
+
+    //                 if(res.data.isAdmin){
+    //                     navigate("/admin")
+    //                 }else{
+    //                     navigate("/")
+    //                 }
+
+                    
+
+    //             }
+    //         ).catch(
+    //             (err)=>{
+    //                 console.log(err)
+    //                 toast.error("Google Login failed")
+    //             }
+    //         )
+
+    //     },
+    //     onError : (error)=>{
+    //         console.log(error)
+    //         toast.error("Google Login failed")
+    //     }
+    // })
+
+    const navigate = useNavigate()
 
     function handleLogin(){
 
@@ -27,8 +71,9 @@ export default function LoginPage(){
             
             toast.success("Login successful");
 
-            //token store user browser local storage
             localStorage.setItem("token", res.data.token);
+
+            //const userData = useContext(UserContext)
 
             if(res.data.isAdmin){
                 navigate("/admin");
@@ -79,7 +124,9 @@ export default function LoginPage(){
                     Don't have an account? <a href="/register" className="text-accent hover:underline">Register</a>
                 </p>
 
-                <button className="w-full h-12 bg-accent text-white rounded-md mt-5 hover:bg-accent/80 transition flex justify-center items-center gap-2"><FcGoogle />Login with Google</button>
+                <button className="w-full h-12 bg-accent text-white rounded-md mt-5 hover:bg-accent/80 transition flex justify-center items-center gap-2" onClick={googleLogin}>
+                    <FcGoogle />Login with Google
+                </button>
             </div>
         </div>
     )

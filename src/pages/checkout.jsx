@@ -15,7 +15,7 @@ export default function Checkout() {
                 cart.map(
                     (item, index) => {
                         return (
-                            <div key={index} className="w-[550px] min-h-[130px] bg-white my-2 rounded-md shadow-md flex flex-row overflow-hidden">
+                            <div key={index} className="w-full lg:w-[550px] min-h-[130px] bg-white my-2 rounded-md shadow-md flex flex-row overflow-hidden">
                                 <img src={item.product.image} className="w-[130px] h-full object-cover p-1" />
 
                                 <div className="w-[calc(100%-130px)] h-full p-1 ">
@@ -60,7 +60,8 @@ export default function Checkout() {
                     }
                 )
             }
-            <div className="w-[550px] min-h-[90px] my-2 rounded-md shadow-sm flex flex-row overflow-hidden fixed bottom-2 bg-white shadow-accent items-center justify-between p-3">
+             <div  className="w-full lg:w-[550px] min-h-[130px]  my-4  rounded-md overflow-hidden flex lg:hidden flex-row"></div>
+            <div className="w-full lg:w-[550px] min-h-[90px] my-2 rounded-md shadow-sm flex flex-row overflow-hidden fixed bottom-[88px] lg:bottom-2 bg-white shadow-accent items-center justify-between p-3">
             
             <OrderModal cart={cart} />
 

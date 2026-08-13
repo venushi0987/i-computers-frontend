@@ -89,11 +89,21 @@ export default function OrderModal(props){
                 style={ 
                     {
                         content : {
-                            width : '450px',
+                            // width : '450px',
+                            // margin : 'auto',
+                            // padding : '0px',
+                            // backgroundColor : 'transparent',
+                            // border : 'none'
+
+                            width : 'min(100%, 450px)',
+                            maxWidth : '100%',
+                            maxHeight:'100%',
                             margin : 'auto',
                             padding : '0px',
                             backgroundColor : 'transparent',
-                            border : 'none'
+                            border : 'none',
+                            inset: 'auto',
+                            position: 'relative'
                         }
                     }
                 }
@@ -116,7 +126,7 @@ export default function OrderModal(props){
                                 <span className='text-lg font-semibold text-white'>{props.cart.length}</span>
                             </div>                           
                     </div>
-                        <div className='w-full  flex flex-row flex-wrap text-secondary'>                            
+                        <div className='w-full  flex flex-row flex-wrap text-secondary '>                            
                             <div className='w-1/2 h-[100px]  flex flex-col justify-center p-4'>
                                 <label className="">First Name</label>
                                 <input
@@ -211,7 +221,7 @@ export default function OrderModal(props){
                                
                             </div> */}
 
-                            <div className='w-full sticky bottom-0 h-[70px] bg-[#7979b8] rounded-b-2xl flex flex-row justify-center items-center gap-2'>
+                            <div className='w-full sticky bottom-0 h-[70px] bg-[#7979b8] rounded-b-2xl flex flex-row justify-center items-center gap-2 mb-[80px]'>
                                 <button
                                 onClick={handleConfirmOrder}
                                 className='bg-accent/75 hover:bg-accent cursor-pointer transition-colors duration-300 text-white px-4 py-2 rounded-md font-semibold'>

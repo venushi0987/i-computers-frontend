@@ -55,7 +55,8 @@ export default function CartPage() {
                     }
                 )
             }
-            <div className="w-[550px] min-h-[90px] my-2 rounded-md shadow-sm flex flex-row overflow-hidden fixed bottom-2 bg-white shadow-accent items-center justify-between p-3">
+             <div  className="w-full lg:w-[550px] min-h-[130px]  my-4  rounded-md overflow-hidden flex lg:hidden flex-row"></div>
+            <div className=" w-full lg:w-[550px] min-h-[90px] my-2 rounded-md shadow-sm flex flex-row overflow-hidden fixed bottom-[88px] lg:bottom-2 bg-white shadow-accent items-center justify-between p-3">
             
             <Link state={cart} to="/checkout" className="bg-accent/75 hover:bg-accent transition-colors duration-300 text-white px-4 py-2 rounded-md font-semibold">
                 Proceed to Checkout
