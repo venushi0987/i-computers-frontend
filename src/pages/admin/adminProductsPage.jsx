@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import api from "../../lib/api";
 import { CiTrash } from "react-icons/ci";
 import { CiEdit } from "react-icons/ci";
-import LoadingAnimation from "../../components/LoadingAnimation";
+import LoadingAnimation from "../../components/loadingAnimation";
 import toast from "react-hot-toast";
 import DeleteProductModel from "../../components/deleteProductModel";
 import EditProductsForm from "./adminEditProductForm";
