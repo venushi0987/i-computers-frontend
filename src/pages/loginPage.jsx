@@ -1,8 +1,9 @@
-import { FcGoogle } from "react-icons/fc";
-import { useState } from "react";
+//import { FcGoogle } from "react-icons/fc";
+import { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import api from "../lib/api";
 import { useNavigate } from "react-router-dom";
+import UserContext from "../context/userContext";
 // import { useGoogleLogin } from "@react-oauth/google";
 // import { useContext } from "react";
 // import UserContext from "../context/userContext";
@@ -11,7 +12,7 @@ export default function LoginPage(){
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    //const userData = useContext(UserContext)  
+    const userData = useContext(UserContext);
 
     //     const googleLogin = useGoogleLogin({
     //     onSuccess : (response)=>{
@@ -73,13 +74,15 @@ export default function LoginPage(){
 
             localStorage.setItem("token", res.data.token);
 
-            //const userData = useContext(UserContext)
+            return api.get("/users/me", {
+                headers: {
+                    Authorization: `Bearer ${res.data.token}`,
+                },
+            });
 
-            if(res.data.isAdmin){
-                navigate("/admin");
-            }else{
-                navigate("/");
-            }
+        }).then((res) => {
+            userData.setUser(res.data.user);
+            navigate(res.data.user.isAdmin ? "/admin" : "/");
 
         }
         ).catch((err) => {
@@ -124,9 +127,9 @@ export default function LoginPage(){
                     Don't have an account? <a href="/register" className="text-accent hover:underline">Register</a>
                 </p>
 
-                <button className="w-full h-12 bg-accent text-white rounded-md mt-5 hover:bg-accent/80 transition flex justify-center items-center gap-2" onClick={googleLogin}>
+                {/* <button className="w-full h-12 bg-accent text-white rounded-md mt-5 hover:bg-accent/80 transition flex justify-center items-center gap-2" onClick={googleLogin}>
                     <FcGoogle />Login with Google
-                </button>
+                </button> */}
             </div>
         </div>
     )

@@ -9,7 +9,7 @@ export default function Header(){
         <>
             <header className="w-full h-[100px] bg-accent flex p-4 justify-center lg:justify-between">
                 <Link to="/" className="h-full">
-                    <img src="/bg3.png" alt="Logo" className="h-full"/>
+                    <img src="/bg3.png" alt="Logo" referrerPolicy="no-referrer" className="h-full"/>
                 </Link>
 
                 <div className="h-full text-primary hidden lg:flex items-center">

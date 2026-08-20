@@ -9,6 +9,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import api from "./lib/api";
 import UserContext from "./context/userContext";
+import ResetPasswordPage from "./pages/resetPassword";
 // import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function App() {
@@ -51,8 +52,10 @@ function App() {
 						<Route path="/*" element={<HomePage />} />
 						<Route path="/login" element={<LoginPage />} />
 						<Route path="/register" element={<RegisterPage />} />
+						<Route path="/reset-password" element={<ResetPasswordPage />} />
 						<Route path="/admin/*" element={<AdminPage />} />
 						<Route path="/test" element={<TestPage />} />
+
 					</Routes>
 				</div>
 			</UserContext>
