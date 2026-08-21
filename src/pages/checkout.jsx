@@ -1,16 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getCartTotal } from "../lib/cart";
 import getFormattedPrice from "../lib/price-format";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import OrderModal from "../components/orderModal";
-import { FaCheckCircle, FaShoppingCart, FaCreditCard } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 export default function Checkout() {
 	const location = useLocation();
+	const navigate = useNavigate();
 	const [cart, setCart] = useState(location.state || []);
 
+	useEffect(() => {
+		if (!cart || cart.length === 0) {
+			toast.error("Your cart is empty! Please add products before checking out.", {
+				id: "checkout-empty-cart",
+				duration: 4000,
+			});
+			navigate("/products");
+		}
+	}, [cart, navigate]);
+
+	if (!cart || cart.length === 0) {
+		return null;
+	}
+
 	return (
-		<div className="w-full min-h-[calc(100vh-90px)] overflow-y-auto bg-primary flex flex-col items-center py-6 pb-[140px] px-4">
+		<div className="w-full min-h-[calc(100vh-90px)] overflow-y-auto bg-primary flex flex-col items-center py-6 pb-[140px] px-4 font-sans">
 			{/* Order Progress Stepper Bar */}
 			<div className="w-full max-w-xl bg-white p-4 mb-6 rounded-2xl shadow-sm border border-gray-200 flex items-center justify-between">
 				<div className="flex items-center gap-2 text-accent font-semibold text-sm">
@@ -36,15 +51,19 @@ export default function Checkout() {
 				{cart.map((item, index) => {
 					const currentQty = item.quantity || item.qty || 1;
 					return (
-						<div key={index} className="w-full bg-white p-3 rounded-xl shadow-sm border border-gray-200 flex gap-4 items-center">
-							<img src={item.product.image} alt={item.product.name} className="w-24 h-24 object-contain p-2 bg-gray-50 rounded-lg border border-gray-100 flex-shrink-0" />
+						<div key={index} className="w-full bg-white p-3.5 rounded-2xl shadow-sm border border-gray-200 flex gap-4 items-center">
+							<img
+								src={item.product?.images?.[0] || item.product?.image || "/placeholder.jpg"}
+								alt={item.product?.name}
+								className="w-24 h-24 object-contain p-2 bg-gray-50 rounded-xl border border-gray-100 flex-shrink-0"
+							/>
 
-							<div className="flex-1 flex flex-col justify-between">
+							<div className="flex-1 min-w-0 flex flex-col justify-between">
 								<div>
-									<h3 className="font-semibold text-secondary text-base line-clamp-1">{item.product.name}</h3>
+									<h3 className="font-semibold text-secondary text-base line-clamp-1">{item.product?.name}</h3>
 									<div className="flex items-center gap-2 mt-1">
-										<span className="text-lg font-bold text-accent">{getFormattedPrice(item.product.price)}</span>
-										{item.product.labelledPrice > item.product.price && (
+										<span className="text-lg font-bold text-accent">{getFormattedPrice(item.product?.price || 0)}</span>
+										{item.product?.labelledPrice > item.product?.price && (
 											<span className="text-xs text-gray-400 line-through">{getFormattedPrice(item.product.labelledPrice)}</span>
 										)}
 									</div>
@@ -78,7 +97,7 @@ export default function Checkout() {
 									</div>
 
 									<p className="text-accent font-extrabold text-base">
-										{getFormattedPrice(item.product.price * currentQty)}
+										{getFormattedPrice((item.product?.price || 0) * currentQty)}
 									</p>
 								</div>
 							</div>
