@@ -10,7 +10,9 @@ import { useEffect, useState } from "react";
 import api from "./lib/api";
 import UserContext from "./context/userContext";
 import ResetPasswordPage from "./pages/resetPassword";
-// import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
 
 function App() {
 	const [user, setUser] = useState(null);
@@ -30,7 +32,6 @@ function App() {
 				setUserLoadingFinished(true);
 			})
 			.catch(() => {
-				toast.error("Please login again");
 				localStorage.removeItem("token");
 				setUser(null);
 				setUserLoadingFinished(true);
@@ -38,12 +39,12 @@ function App() {
 	}, []);
 
 	return (
-		// <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+		<GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
 			<UserContext
 				value={{
 					user: user,
 					setUser: setUser,
-			userLoadingFinished: userLoadingFinished,
+					userLoadingFinished: userLoadingFinished,
 				}}
 			>
 				<div className="w-full h-screen bg-primary">
@@ -55,11 +56,10 @@ function App() {
 						<Route path="/reset-password" element={<ResetPasswordPage />} />
 						<Route path="/admin/*" element={<AdminPage />} />
 						<Route path="/test" element={<TestPage />} />
-
 					</Routes>
 				</div>
 			</UserContext>
-		//</GoogleOAuthProvider>
+		</GoogleOAuthProvider>
 	);
 }
 
