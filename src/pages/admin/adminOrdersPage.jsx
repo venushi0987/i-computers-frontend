@@ -4,140 +4,187 @@ import LoadingAnimation from "../../components/loadingAnimation";
 import getFormattedPrice from "../../lib/price-format";
 import formatTimestamp from "../../lib/date-format";
 import AdminOrderDetailsModal from "../../components/adminOrderDetailsModal";
+import { BsCartCheck } from "react-icons/bs";
+import { FiRefreshCw, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 export default function AdminOrdersPage() {
-    const [orders, setOrders] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [pageSize, setPageSize] = useState(3);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [totalOrders, setTotalOrders] = useState(0);
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        api.get("/orders/"+pageSize+"/"+currentPage, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).then((response) => {
-            if (isLoading) {
-                console.log(response.data);
-                setOrders(response.data.orders);
-                setTotalPages(response.data.totalPages);
-                setTotalOrders(response.data.totalCount);
-                setIsLoading(false);
-            }
-        });
-    }, [isLoading]);
+	const [orders, setOrders] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [pageSize, setPageSize] = useState(5);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [totalPages, setTotalPages] = useState(1);
+	const [totalOrders, setTotalOrders] = useState(0);
 
-    return (
-        <div className="w-full max-h-full  flex flex-col p-4 items-start gap-0 overflow-y-scroll">
-            
+	useEffect(() => {
+		const token = localStorage.getItem("token");
+		api.get("/orders/" + pageSize + "/" + currentPage, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		}).then((response) => {
+			if (isLoading) {
+				setOrders(response.data.orders);
+				setTotalPages(response.data.totalPages);
+				setTotalOrders(response.data.totalCount);
+				setIsLoading(false);
+			}
+		});
+	}, [isLoading, pageSize, currentPage]);
 
-            <div className="w-full min-h-[100px] bg-white shadow-md rounded-md flex items-center p-4 justify-between mb-8">
-                {isLoading && <LoadingAnimation />}
-                <h1 className="text-2xl font-semibold text-secondary">Orders</h1>
+	return (
+		<div className="w-full space-y-6 pb-20 font-sans">
+			{isLoading && <LoadingAnimation />}
 
-                <div className="flex gap-4 justify-center items-center">
-                    <span>{totalOrders} Orders</span>
-                    <button
-                        onClick={() => {
-                            setIsLoading(true);
-                        }}
-                        className="bg-accent text-white px-4 py-2 rounded-md"
-                    >
-                        Refresh
-                    </button>
-                </div>
-            </div>
-            <table className="w-full bg-white shadow-md rounded-md overflow-hidden text-center mb-[100px]">
-                <thead className="bg-accent text-white h-[60px]">
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Date</th>
-                        <th>Email</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>City</th>
-                        <th>Phone</th>
-                        <th>Status</th>
-                        <th>Item count</th>
-                        <th>Total</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
+			{/* Page Header Bar */}
+			<div className="bg-white p-6 rounded-2xl shadow-md border border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+				<div className="flex items-center gap-3">
+					<div className="p-3 bg-accent/10 text-accent rounded-xl">
+						<BsCartCheck className="text-2xl" />
+					</div>
+					<div>
+						<h1 className="text-2xl font-extrabold text-secondary tracking-tight">Customer Orders</h1>
+						<p className="text-sm text-gray-500 font-normal mt-0.5">Track and manage customer purchases and order fulfillment</p>
+					</div>
+				</div>
 
-                <tbody>
-                    {orders.map((item) => {
-                        return (
-                            <tr key={item.orderId} className="odd:bg-gray-200 h-[50px]">
-                                
-                                <td>{item.orderId}</td>
-                                <td>{formatTimestamp(item.date)}</td>
-                                <td>{item.email}</td>
-                                <td>{item.firstName}</td>
-                                <td>{item.lastName}</td>
-                                <td>{item.city}</td>
-                                <td>{item.phone}</td>
-                                <td>{item.status}</td>
-                                <td>{item.items.length}</td>
-                                <td>{getFormattedPrice(item.totalAmount)}</td>
-                                <td>
-                                    <div className="flex justify-center items-center gap-2">
-                                        <AdminOrderDetailsModal order={item} refresh={() => setIsLoading(true)} />
-                                    </div>
-                                    
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-            <div className="w-[calc(100%-360px)] h-[100px]  fixed bottom-10 flex justify-center items-center">
-               <div className="w-[500px] h-[50px] bg-white shadow-2xl rounded-md flex justify-between overflow-hidden">
-                    <button className="h-full px-4 hover:bg-accent hover:text-white text-accent transition-colors duration-300 cursor-pointer"
-                        disabled={currentPage == 1}
-                        onClick={
-                            ()=>{
+				<div className="flex items-center gap-3">
+					<span className="bg-accent/10 text-accent font-bold text-sm px-4 py-2 rounded-full border border-accent/20">
+						Total Orders: {totalOrders}
+					</span>
 
-                                const newPageNumber = currentPage - 1
-                                setCurrentPage(newPageNumber)
-                                setIsLoading(true)
-                            }
-                        }>
-                        &lt;&lt; Previous
-                    </button>
-                    <div className="h-full text-accent flex justify-center items-center gap-1">
-                        <label htmlFor="pageSize">Page Size:</label>
-                        <select className="h-full hover:bg-accent hover:text-white text-accent transition-colors duration-300 cursor-pointer"
-                            value={pageSize}
-                            onChange={(e) => {
-                                setPageSize(e.target.value);
-                                setIsLoading(true);
-                            }
-                        }>
-                            <option value={3}>3</option>
-                            <option value={5}>5</option>
-                            <option value={10}>10</option>
-                        </select>
-                    </div>
+					<button
+						onClick={() => setIsLoading(true)}
+						className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded-xl transition-colors cursor-pointer flex items-center gap-2"
+					>
+						<FiRefreshCw className="text-xs" /> Refresh
+					</button>
+				</div>
+			</div>
 
-                    <div className="h-full px-4 hover:bg-accent hover:text-white text-accent transition-colors duration-300 cursor-pointer flex justify-center items-center gap-2">
-                        <span>Page {currentPage} of {totalPages}</span>
-                    </div>
-                    
-                    <button
-                        disabled={currentPage == totalPages}
-                        onClick={()=>{
-                            const newPageNumber = currentPage + 1
-                            setCurrentPage(newPageNumber)
-                            setIsLoading(true)
-                        }}
-                    className="h-full px-4 hover:bg-accent hover:text-white text-accent transition-colors duration-300 cursor-pointer" >
-                      Next &gt;&gt;
-                    </button>
-               </div>
-            </div>
-            
-        </div>
-    );
+			{/* Orders Table Card */}
+			<div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+				<div className="overflow-x-auto">
+					<table className="w-full text-left border-collapse">
+						<thead className="bg-accent text-white uppercase text-xs font-extrabold tracking-wider border-b border-white/10">
+							<tr>
+								<th className="py-4 px-5">Order ID</th>
+								<th className="py-4 px-5">Date</th>
+								<th className="py-4 px-5">Customer</th>
+								<th className="py-4 px-5">City / Phone</th>
+								<th className="py-4 px-5 text-center">Items</th>
+								<th className="py-4 px-5">Total Amount</th>
+								<th className="py-4 px-5 text-center">Status</th>
+								<th className="py-4 px-5 text-center">Actions</th>
+							</tr>
+						</thead>
+
+						<tbody className="divide-y divide-gray-100 text-sm text-secondary">
+							{orders.map((item) => {
+								const customerName = `${item.firstName || ""} ${item.lastName || ""}`.trim() || "Customer";
+								return (
+									<tr key={item.orderId} className="hover:bg-blue-50/50 transition-colors">
+										<td className="py-4 px-5 font-bold text-base text-accent">
+											{item.orderId}
+										</td>
+
+										<td className="py-4 px-5 text-sm text-gray-700 font-medium">
+											{formatTimestamp(item.date)}
+										</td>
+
+										<td className="py-4 px-5">
+											<p className="font-bold text-base text-secondary">{customerName}</p>
+											<p className="text-sm text-gray-600 font-medium mt-0.5">{item.email}</p>
+										</td>
+
+										<td className="py-4 px-5 text-sm text-gray-700">
+											<p className="font-bold text-secondary text-sm">{item.city || "-"}</p>
+											<p className="text-gray-600 font-medium text-xs mt-0.5">{item.phone || "-"}</p>
+										</td>
+
+										<td className="py-4 px-5 text-center">
+											<span className="bg-gray-100 text-gray-800 text-xs px-3.5 py-1.5 rounded-full font-extrabold inline-block">
+												{item.items?.length || 0} item(s)
+											</span>
+										</td>
+
+										<td className="py-4 px-5 font-extrabold text-base text-accent">
+											{getFormattedPrice(item.totalAmount)}
+										</td>
+
+										<td className="py-4 px-5 text-center">
+											<span
+												className={`px-3.5 py-1.5 rounded-full text-xs font-extrabold inline-block ${
+													item.status === "completed" || item.status === "Delivered"
+														? "bg-green-100 text-green-700 border border-green-200"
+														: item.status === "cancelled"
+														? "bg-red-100 text-red-700 border border-red-200"
+														: "bg-amber-100 text-amber-800 border border-amber-200"
+												}`}
+											>
+												{item.status || "Pending"}
+											</span>
+										</td>
+
+										<td className="py-4 px-5 text-center">
+											<div className="flex justify-center items-center gap-2">
+												<AdminOrderDetailsModal order={item} refresh={() => setIsLoading(true)} />
+											</div>
+										</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			{/* Modern Pagination Toolbar */}
+			<div className="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-2xl shadow-md border border-gray-200 gap-4">
+				<div className="flex items-center gap-2 text-sm text-gray-700 font-medium">
+					<span>Items per page:</span>
+					<select
+						value={pageSize}
+						onChange={(e) => {
+							setPageSize(Number(e.target.value));
+							setCurrentPage(1);
+							setIsLoading(true);
+						}}
+						className="px-3.5 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-accent outline-none"
+					>
+						<option value={3}>3</option>
+						<option value={5}>5</option>
+						<option value={10}>10</option>
+					</select>
+				</div>
+
+				<div className="flex items-center gap-3">
+					<button
+						disabled={currentPage === 1}
+						onClick={() => {
+							setCurrentPage(currentPage - 1);
+							setIsLoading(true);
+						}}
+						className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-semibold flex items-center gap-1 transition-colors"
+					>
+						<FiChevronLeft /> Previous
+					</button>
+
+					<span className="text-sm font-bold text-secondary">
+						Page {currentPage} of {totalPages}
+					</span>
+
+					<button
+						disabled={currentPage === totalPages}
+						onClick={() => {
+							setCurrentPage(currentPage + 1);
+							setIsLoading(true);
+						}}
+						className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 disabled:opacity-40 disabled:cursor-not-allowed rounded-lg text-sm font-semibold flex items-center gap-1 transition-colors"
+					>
+						Next <FiChevronRight />
+					</button>
+				</div>
+			</div>
+		</div>
+	);
 }

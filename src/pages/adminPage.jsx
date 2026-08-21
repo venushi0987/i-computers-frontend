@@ -1,7 +1,7 @@
-import { Link, Route, Routes } from "react-router-dom";
-import { BsCart2 } from "react-icons/bs";
-import { BsBox } from "react-icons/bs";
+import { Link, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { BsCart2, BsBox } from "react-icons/bs";
 import { FiUsers } from "react-icons/fi";
+import { FaHome, FaSignOutAlt, FaUserShield } from "react-icons/fa";
 import AdminProductsPage from "./admin/adminProductsPage";
 import AdminUsersPage from "./admin/adminUsersPage";
 import AddProductsForm from "./admin/adminAddProductsForm";
@@ -9,46 +9,125 @@ import EditProductsForm from "./admin/adminEditProductForm";
 import AdminOrdersPage from "./admin/adminOrdersPage";
 import { useContext, useEffect } from "react";
 import UserContext from "../context/userContext";
-import { useNavigate } from "react-router-dom";
 
+export default function AdminPage() {
+	const userData = useContext(UserContext);
+	const navigate = useNavigate();
+	const location = useLocation();
 
-export default function AdminPage(){
+	useEffect(() => {
+		if (!userData.user || !userData.user.isAdmin) {
+			navigate("/login");
+		}
+	}, [userData, navigate]);
 
-    const userData = useContext(UserContext);
-    const navigate = useNavigate();
+	return (
+		<div className="flex w-full min-h-screen bg-primary font-sans">
+			{/* Admin Sidebar */}
+			<aside className="w-72 bg-accent text-white min-h-screen shadow-2xl flex flex-col justify-between sticky top-0 h-screen z-30">
+				<div>
+					{/* Logo & Admin Title */}
+					<div className="p-6 border-b border-white/10 flex flex-col items-start gap-2">
+						<Link to="/" className="hover:opacity-90 transition-opacity">
+							<img src="/logo-white.png" alt="Isuri Computers Logo" className="h-10 object-contain" />
+						</Link>
+						<span className="inline-flex items-center gap-1.5 bg-yellow-400 text-black text-xs font-bold px-2.5 py-0.5 rounded-full mt-1">
+							<FaUserShield className="text-xs" /> Admin Portal
+						</span>
+					</div>
 
-    useEffect(() => {
-        if(!userData.user || !userData.user.isAdmin){
-            navigate("/login");
-        }
-    }, [userData, navigate]);
+					{/* Navigation Links */}
+					<nav className="p-4 space-y-2">
+						<Link
+							to="/admin"
+							className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-base transition-all ${
+								location.pathname === "/admin"
+									? "bg-white/15 text-yellow-300 font-bold border-l-4 border-yellow-400 shadow-sm"
+									: "text-white/80 hover:bg-white/10 hover:text-white"
+							}`}
+						>
+							<BsCart2 className="text-xl" />
+							<span>Orders</span>
+						</Link>
 
+						<Link
+							to="/admin/products"
+							className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-base transition-all ${
+								location.pathname.startsWith("/admin/products") || location.pathname.includes("product")
+									? "bg-white/15 text-yellow-300 font-bold border-l-4 border-yellow-400 shadow-sm"
+									: "text-white/80 hover:bg-white/10 hover:text-white"
+							}`}
+						>
+							<BsBox className="text-xl" />
+							<span>Products</span>
+						</Link>
 
-    return(
-        <div className="flex w-full h-full text-secondary">
-           <div className="w-[360px] h-full shadow-2xl flex flex-col">
+						<Link
+							to="/admin/users"
+							className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-base transition-all ${
+								location.pathname.startsWith("/admin/users")
+									? "bg-white/15 text-yellow-300 font-bold border-l-4 border-yellow-400 shadow-sm"
+									: "text-white/80 hover:bg-white/10 hover:text-white"
+							}`}
+						>
+							<FiUsers className="text-xl" />
+							<span>Users</span>
+						</Link>
+					</nav>
+				</div>
 
-            <div className="w-full h-[60px] flex items-center mb-2 gap-2">
-                <img src="/bg4.png" alt="logo" className="w-[200px] h-[60px]"/>
-                <span className="text-2xl font-bold">Admin</span>
-            </div>
+				{/* Sidebar Footer */}
+				<div className="p-4 border-t border-white/10 space-y-2">
+					<Link
+						to="/"
+						className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm font-semibold transition-colors"
+					>
+						<FaHome className="text-sm" /> Return to Website
+					</Link>
 
-                <Link to="/admin" className="w-full flex item-center p-2 text-xl gap-2 mb-2 hover:bg-accent hover:text-white"><BsCart2 className="text-3xl"/>Orders</Link>
-                <Link to="/admin/products" className="w-full flex item-center p-2 text-xl gap-2 mb-2 hover:bg-accent hover:text-white"><BsBox className="text-3xl"/>Products</Link>
-                <Link to="/admin/users" className="w-full flex item-center p-2 text-xl gap-2 mb-2 hover:bg-accent hover:text-white"><FiUsers className="text-3xl"/>Users</Link>
+					<button
+						onClick={() => {
+							localStorage.removeItem("token");
+							userData.setUser(null);
+							navigate("/login");
+						}}
+						className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600/80 hover:bg-red-600 text-white text-sm font-semibold transition-colors cursor-pointer"
+					>
+						<FaSignOutAlt className="text-sm" /> Logout
+					</button>
+				</div>
+			</aside>
 
-           </div>
-           <div className="w-[calc(100%-360px)] h-full bg-primary">
-            <Routes>
-                <Route path="/" element={<AdminOrdersPage />} />
-                <Route path="/products" element={<AdminProductsPage />} />
-                <Route path="/users" element={<AdminUsersPage />} />
-                <Route path="/add-product" element={<AddProductsForm />} />
-                <Route path="/edit-product" element={<EditProductsForm />} />
-            </Routes>
-           </div>
+			{/* Admin Main Content Container */}
+			<main className="flex-1 min-h-screen bg-gray-50 flex flex-col">
+				{/* Top Header Strip */}
+				<header className="w-full h-16 bg-white border-b border-gray-200 px-6 flex justify-between items-center sticky top-0 z-20 shadow-sm">
+					<h2 className="text-lg font-bold text-secondary">
+						{location.pathname === "/admin" && "Orders Management"}
+						{location.pathname === "/admin/products" && "Products Management"}
+						{location.pathname === "/admin/users" && "Users Management"}
+						{location.pathname === "/admin/add-product" && "Add New Product"}
+						{location.pathname === "/admin/edit-product" && "Edit Product"}
+					</h2>
 
-        </div>
-    )
+					<div className="flex items-center gap-3">
+						<span className="text-xs text-gray-500 font-medium">
+							Logged in as: <strong className="text-secondary">{userData.user?.firstName} {userData.user?.lastName}</strong>
+						</span>
+					</div>
+				</header>
+
+				{/* Dynamic Page Views */}
+				<div className="p-6 flex-1 overflow-y-auto">
+					<Routes>
+						<Route path="/" element={<AdminOrdersPage />} />
+						<Route path="/products" element={<AdminProductsPage />} />
+						<Route path="/users" element={<AdminUsersPage />} />
+						<Route path="/add-product" element={<AddProductsForm />} />
+						<Route path="/edit-product" element={<EditProductsForm />} />
+					</Routes>
+				</div>
+			</main>
+		</div>
+	);
 }
-
