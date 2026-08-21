@@ -95,7 +95,7 @@ export default function LoginPage(){
         <div className="w-full h-full bg-[url('/bg.jpg')] bg-cover bg-center flex justify-center items-center">
             <div className="w-[450px] h-[580px] backdrop-blur-md shadow-2xl rounded-lg p-6 flex flex-col items-center">
 
-                <img src="/bg4.png" className="w-[300px] h-[65px] object-cover"/>
+                <img src="/logosir.png" className="w-[300px] h-[100px] object-cover"/>
                 <h1 className="text-3xl font-bold text-secondary mt-5">Login</h1>
 
                 <label className="w-full mt-5 text-secondary font-semibold">Email</label>
