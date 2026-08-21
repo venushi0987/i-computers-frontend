@@ -9,6 +9,7 @@ import { FaAngleRight } from "react-icons/fa";
 import { HiOutlineBadgeCheck } from "react-icons/hi";
 import getFormattedPrice from "../lib/price-format";
 import { addToCart } from "../lib/cart";
+import ReviewSection from "../components/reviewSection";
 
 export default function ProductOverview(){
 
@@ -37,112 +38,97 @@ export default function ProductOverview(){
     //const location = useLocation();
 
     return(
-        <div className="w-full h-[calc(100vh-100px)] min-h-[calc(100vh-100px)] ">
+        <div className="w-full min-h-[calc(100vh-100px)] overflow-y-auto bg-primary pt-6 lg:pt-8 pb-[100px]">
             {
                 loading&&<LoadingAnimation/>
             }
             {
-                product!=null&&
-                <div className="w-full h-auto pb-[80px] lg:pb-0 lg:h-full lg:min-h-full flex flex-col lg:flex-row bg-primary">
-                     <h1 className="lg:hidden text-2xl py-4 px-2 font-semibold">{product.name}
-                            {
-                                product.altNames.map(
-                                    (name , index)=>{
-                                        return(
-                                            <span key={index} className="font-normal text-gray-500"> | {name}</span>
-                                        )
-                                    }
-                                )
-                            }
-                        </h1>
-                    <div className="lg:w-1/2 lg:h-full flex justify-center items-center">
-                        <ImageSlideShow images={product.images}/>
-                    </div>
-                    <div className="w-full lg:w-1/2 lg:h-full p-8 flex flex-col">
-                        <h1 className="hidden lg:block text-3xl font-semibold">{product.name}
-                            {
-                                product.altNames.map(
-                                    (name , index)=>{
-                                        return(
-                                            <span key={index} className="font-normal text-gray-500"> | {name}</span>
-                                        )
-                                    }
-                                )
-                            }
-                        </h1>
-                        <p className="text-lg text-gray-600 italic">{product.productId}</p>
-                        <p className="text-xl  mt-4 font-thin flex items-center"><BiCategory /><span className="mx-2 font-normal">Category</span> <FaAngleRight />  {product.category}</p>
-                        <p className="text-xl  mt-4 font-thin flex items-center mb-4"><HiOutlineBadgeCheck /><span className="mx-2 font-normal">{product.brand}</span> <FaAngleRight />  {product.model}</p>
-                        {
-                            product.labelledPrice>product.price&&
-                            <span className="text-lg font-normal line-through text-gray-500">{getFormattedPrice(product.labelledPrice)}</span>
-                        }
-                        <p className="text-3xl font-semibold text-accent mb-4">{getFormattedPrice(product.price)}</p>
-                        <p className="text-lg font-normal text-gray-600 mb-4">{product.description}</p>
-
-                        <div className="w-full  flex ">
-                            <button className="w-[200px] h-[60px] bg-white border-2 border-accent text-accent font-semibold rounded-md hover:bg-accent hover:text-white transition-colors duration-300 cursor-pointer"
-                            onClick={
-                                ()=>{
-                                    addToCart(product,1);
-                                    toast.success("Product added to cart");
-                                }
-                            }>Add to Cart</button>
-
-                            {/* <Link
-                                to="/checkout"
-                                state={
-                                    [
-                                        {
-                                            product : {
-                                                productId : product.productId,
-                                                name : product.name,
-                                                price : product.price,
-                                                labelledPrice : product.labelledPrice,
-                                                image : product.images[0]
-                                            },
-                                            qty : 1
+                product != null && (
+                    <div className="w-full flex flex-col">
+                        <div className="w-full h-auto flex flex-col lg:flex-row bg-primary pt-2 lg:pt-4">
+                            <h1 className="lg:hidden text-2xl py-4 px-2 font-semibold">{product.name}
+                                {
+                                    product.altNames?.map(
+                                        (name , index)=>{
+                                            return(
+                                                <span key={index} className="font-normal text-gray-500"> | {name}</span>
+                                            )
                                         }
-                                    ]
+                                    )
                                 }
-                            className="w-[200px] h-[60px] bg-accent border-2 text-white font-semibold rounded-md hover:bg-white hover:text-accent  ml-2 transition-colors duration-300 cursor-pointer flex justify-center items-center"
-                          
-                            >Buy now</Link> */}
-
-                            <button
-                            onClick={
-                                ()=>{
-                                    navigate("/checkout" , {
-                                        state : [
-                                            {
-                                                product : {
-                                                    productId : product.productId,
-                                                    name : product.name,
-                                                    price : product.price,
-                                                    labelledPrice : product.labelledPrice,
-                                                    image : product.images[0]
-                                                },
-                                                qty : 1
+                            </h1>
+                            <div className="lg:w-1/2 lg:h-full flex justify-center items-center">
+                                <ImageSlideShow images={product.images}/>
+                            </div>
+                            <div className="w-full lg:w-1/2 lg:h-full p-8 flex flex-col">
+                                <h1 className="hidden lg:block text-3xl font-semibold">{product.name}
+                                    {
+                                        product.altNames?.map(
+                                            (name , index)=>{
+                                                return(
+                                                    <span key={index} className="font-normal text-gray-500"> | {name}</span>
+                                                )
                                             }
-                                        ]
-                                    })
+                                        )
+                                    }
+                                </h1>
+                                <p className="text-lg text-gray-600 italic">{product.productId}</p>
+                                <p className="text-xl  mt-4 font-thin flex items-center"><BiCategory /><span className="mx-2 font-normal">Category</span> <FaAngleRight />  {product.category}</p>
+                                <p className="text-xl  mt-4 font-thin flex items-center mb-4"><HiOutlineBadgeCheck /><span className="mx-2 font-normal">{product.brand}</span> <FaAngleRight />  {product.model}</p>
+                                {
+                                    product.labelledPrice>product.price&&
+                                    <span className="text-lg font-normal line-through text-gray-500">{getFormattedPrice(product.labelledPrice)}</span>
                                 }
-                            }
-                            className="w-[200px] h-[60px] bg-accent border-2 text-white font-semibold rounded-md hover:bg-white hover:text-accent  ml-2 transition-colors duration-300 cursor-pointer flex justify-center items-center">
-                                Buy now
-                            </button>
+                                <p className="text-3xl font-semibold text-accent mb-4">{getFormattedPrice(product.price)}</p>
+                                <p className="text-lg font-normal text-gray-600 mb-4">{product.description}</p>
 
+                                <div className="w-full  flex ">
+                                    <button className="w-[200px] h-[60px] bg-white border-2 border-accent text-accent font-semibold rounded-md hover:bg-accent hover:text-white transition-colors duration-300 cursor-pointer"
+                                    onClick={
+                                        ()=>{
+                                            addToCart(product,1);
+                                            toast.success("Product added to cart");
+                                        }
+                                    }>Add to Cart</button>
 
+                                    <button
+                                    onClick={
+                                        ()=>{
+                                            navigate("/checkout" , {
+                                                state : [
+                                                    {
+                                                        product : {
+                                                            productId : product.productId,
+                                                            name : product.name,
+                                                            price : product.price,
+                                                            labelledPrice : product.labelledPrice,
+                                                            image : product.images[0]
+                                                        },
+                                                        qty : 1,
+                                                        quantity : 1
+                                                    }
+                                                ]
+                                            })
+                                        }
+                                    }
+                                    className="w-[200px] h-[60px] bg-accent border-2 text-white font-semibold rounded-md hover:bg-white hover:text-accent  ml-2 transition-colors duration-300 cursor-pointer flex justify-center items-center">
+                                        Buy now
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        
+                        <div className="w-full px-4">
+                            <ReviewSection productId={product.productId} />
+                        </div>
                     </div>
-                </div>
+                )
             }
             {
-                product==null&&!loading&&
-                <div className="w-full h-full flex justify-center items-center">
-                    <h1 className="text-3xl font-bold">Product not found</h1>
-                </div>
+                product == null && !loading && (
+                    <div className="w-full h-full flex justify-center items-center">
+                        <h1 className="text-3xl font-bold">Product not found</h1>
+                    </div>
+                )
             }
         </div>
     )

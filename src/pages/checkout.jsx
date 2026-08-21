@@ -31,26 +31,28 @@ export default function Checkout() {
                                         <button 
                                         onClick={
                                             ()=>{
-                                                if(item.quantity > 1){
-                                                const newCart = [...cart];
-                                                newCart[index].quantity -= 1;
-                                                setCart(newCart);
+                                                const currentQty = item.quantity || item.qty || 1;
+                                                if(currentQty > 1){
+                                                    const newCart = [...cart];
+                                                    newCart[index] = { ...newCart[index], quantity: currentQty - 1, qty: currentQty - 1 };
+                                                    setCart(newCart);
                                                 }
                                             }
                                         }
                                         className="w-[40px] h-full hover:bg-accent hover:text-white text-black font-bold hover:bg-accent-dark transition-colors duration-300 bg-gray-300 hover:cursor-pointer">-</button>
-                                        <span className="w-[40px] h-full flex items-center justify-center">{item.quantity}</span>
+                                        <span className="w-[40px] h-full flex items-center justify-center">{item.quantity || item.qty || 1}</span>
                                         <button 
                                         onClick={
                                             ()=>{
+                                                const currentQty = item.quantity || item.qty || 1;
                                                 const newCart = [...cart];
-                                                newCart[index].quantity += 1;
+                                                newCart[index] = { ...newCart[index], quantity: currentQty + 1, qty: currentQty + 1 };
                                                 setCart(newCart);
                                             }
                                         }
                                         className="w-[40px] h-full hover:bg-accent hover:text-white text-black font-bold hover:bg-accent-dark transition-colors duration-300 bg-gray-300 hover:cursor-pointer">+</button>
                                     </div>
-                                        <p className="text-gray-600 font-semibold mt-1 ml-4">{getFormattedPrice(item.product.price * item.quantity)}</p>
+                                        <p className="text-gray-600 font-semibold mt-1 ml-4">{getFormattedPrice(item.product.price * (item.quantity || item.qty || 1))}</p>
 
                                     </div>
                                     

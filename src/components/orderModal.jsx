@@ -47,10 +47,11 @@ export default function OrderModal(props){
         }
         
         for(let i=0; i<props.cart.length; i++){
-
+            const itemQty = Number(props.cart[i].quantity || props.cart[i].qty || 1);
             orderData.items.push({
                 productId : props.cart[i].product.productId,
-                qty : props.cart[i].qty
+                qty : itemQty,
+                quantity : itemQty
             })
 
         }
@@ -64,8 +65,9 @@ export default function OrderModal(props){
             })
 
             toast.success("Order placed successfully")
+            localStorage.setItem("cart", "[]")
             setModalIsOpen(false)
-            navigate("/products")
+            navigate("/my-orders")
 
         }catch(err){
             console.log(err)
