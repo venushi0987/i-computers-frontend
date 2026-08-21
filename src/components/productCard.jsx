@@ -1,28 +1,82 @@
 import getFormattedPrice from "../lib/price-format";
 import { Link } from "react-router-dom";
+import { FaStar } from "react-icons/fa";
 
-export default function ProductCard(props){ // ProductCard first letter should be capitalized to be used as a component in React
+export default function ProductCard(props) {
+	const product = props.product;
 
-    const product = props.product; // This is the product object that is passed as a prop to the ProductCard component. It contains the product's name, price, and image.
+	const discountPercent =
+		product.labelledPrice > product.price
+			? Math.round(((product.labelledPrice - product.price) / product.labelledPrice) * 100)
+			: 0;
 
-    return(
-        // if you want to add manual values you need to add [] around it.
-        <Link to={"/overview/"+product.productId}state={product} className="bg-white w-[390px] h-[500px] m-6 shadow-2xl rounded-xl flex flex-col overflow-hidden hover:[&_.primary-image]:opacity-0"> 
-          
-          <div className="w-full h-[350px] relative">
-            <img src={product.images[0]} className="w-full h-full absolute"/>
-            <img src={product.images[1]} className="w-full h-full absolute bg-white primary-image transition-opacity duration-700 "/>
+	// Use dynamic rating from product data if available, fallback to 5.0
+	const ratingValue = product.rating ? Number(product.rating).toFixed(1) : "5.0";
 
-          </div>
+	return (
+		<Link
+			to={"/overview/" + product.productId}
+			state={product}
+			className="group bg-white w-[350px] lg:w-[380px] h-[510px] m-4 shadow-md hover:shadow-2xl rounded-2xl flex flex-col overflow-hidden transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 relative hover:[&_.primary-image]:opacity-0 cursor-pointer"
+		>
+			{/* Discount Badge Tag */}
+			{discountPercent > 0 && (
+				<div className="absolute top-3 left-3 z-20 bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-md">
+					-{discountPercent}% OFF
+				</div>
+			)}
 
-          <span className="text-sm font-thin text-gray-400 px-2 mt-2">{product.productId}</span>
-          <h1 className="text-lg font-semibold mt-1 px-2">{product.name}</h1>
-          {
-            product.labelledPrice > product.price && <span className="text-sm text-gray-500 line-through mt-1 px-2">{getFormattedPrice(product.labelledPrice)}</span>
-          }
+			{/* Category Tag */}
+			{product.category && (
+				<div className="absolute top-3 right-3 z-20 bg-accent/80 backdrop-blur-sm text-white text-[11px] font-semibold px-2.5 py-0.5 rounded-full">
+					{product.category}
+				</div>
+			)}
 
-            <span className="text-lg font-bold mt-1 px-2">{getFormattedPrice(product.price)}</span>
-        </Link>
-    
-    )
+			<div className="w-full h-[340px] relative overflow-hidden bg-gray-50 flex items-center justify-center">
+				<img
+					src={product.images[0]}
+					alt={product.name}
+					className="w-full h-full object-contain p-4 absolute transition-transform duration-500 group-hover:scale-105"
+				/>
+				{product.images[1] && (
+					<img
+						src={product.images[1]}
+						alt={product.name}
+						className="w-full h-full object-contain p-4 absolute bg-white primary-image transition-opacity duration-700 transition-transform group-hover:scale-105"
+					/>
+				)}
+			</div>
+
+			<div className="p-4 flex flex-col justify-between flex-1 bg-white">
+				<div>
+					<div className="flex items-center justify-between text-xs text-gray-400 mb-1">
+						<span className="font-medium text-gray-500">{product.productId}</span>
+						<span className="flex items-center text-amber-500 font-bold gap-1 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100">
+							<FaStar className="text-xs text-amber-400" /> {ratingValue}
+						</span>
+					</div>
+					<h3 className="text-base font-semibold text-secondary line-clamp-2 group-hover:text-accent transition-colors">
+						{product.name}
+					</h3>
+				</div>
+
+				<div className="mt-3 pt-2 border-t border-gray-100 flex items-baseline justify-between">
+					<div className="flex flex-col">
+						{product.labelledPrice > product.price && (
+							<span className="text-xs text-gray-400 line-through">
+								{getFormattedPrice(product.labelledPrice)}
+							</span>
+						)}
+						<span className="text-xl font-extrabold text-accent">
+							{getFormattedPrice(product.price)}
+						</span>
+					</div>
+					<span className="text-xs font-semibold text-accent bg-accent/10 px-3 py-1 rounded-lg group-hover:bg-accent group-hover:text-white transition-colors">
+						View Details
+					</span>
+				</div>
+			</div>
+		</Link>
+	);
 }
